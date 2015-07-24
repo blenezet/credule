@@ -1,0 +1,12 @@
+Package: credule
+Version: 0.1
+Date: 2015-07-16
+Title: Credit Default Swap functions
+Authors@R: c(person("Bertrand", "Le Nezet", role = c("cre","ctb", "cph"), email = "bertrand.lenezet@gmail.com" )
+             )
+Author: Bertrand Le Nezet
+Maintainer: Bertrand Le Nezet <bertrand.lenezet@gmail.com>
+Depends: R (>= 2.14.1)
+Description: A short (one paragraph) description of what
+  the package does and why it may be useful.
+License: MIT
