@@ -54,6 +54,8 @@ priceCDS(yieldcurveTenor,
 }
 
 \examples{
+library(credule)
+
 yieldcurveTenor = c(1,2,3,4,5,7)
 yieldcurveRate = c(0.0050,0.0070,0.0080,0.0100, 0.0120,0.0150)
 creditcurveTenor = c(1,3,5,7)

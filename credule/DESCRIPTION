@@ -1,5 +1,5 @@
 Package: credule
-Version: 0.1-1
+Version: 0.1.1
 Date: 2015-07-16
 Title: Credit Default Swap Functions
 Authors@R: c(person("Bertrand", "Le Nezet", role = c("cre","ctb", "cph"), email = "bertrand.lenezet@gmail.com" ),
