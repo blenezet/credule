@@ -11,9 +11,9 @@ Functions to bootstrap credit curve from Credit Default Swap spreads and to pric
 \tabular{ll}{
 Package: \tab credule\cr
 Type: \tab Package\cr
-Version: \tab 0.1\cr
+Version: \tab 0.1-1\cr
 Date: \tab 2015-07-16\cr
-License: \tab MIT License\cr
+License: \tab MIT + file LICENSE\cr
 }
 }
 \author{
