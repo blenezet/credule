@@ -2,6 +2,7 @@
 #include <math.h>
 
 # include "brent.h"
+# include "credule.h"
 
 //-------------------------------------------------------
 // TODO:
@@ -11,6 +12,11 @@
 //
 //
 //-------------------------------------------------------
+
+// Global static variable
+static struct quadratic_params myGlobalQuadraticParams;
+static struct paramFindParSpread globalParamFindParSpread; 
+static struct paramFindHazardRate globalParamFindHazardRate; 
 
 // internal functions
 double getDiscountFactor(double *yieldcurve, int nyieldcurve, double t) 
@@ -133,6 +139,9 @@ void printCreditCurve(double *creditcurve, int ncreditcurve){
 }
 
 double calculatePremiumLeg(double *creditcurve, int ncreditcurve, double *yieldcurve, int nyieldcurve, double cdsMaturity, int numberPremiumPerYear,int accruedPremiumFlag, double spread, double h) {
+	/*Rprintf("creditcurve[0]=%f, ncreditcurve=%d, yieldcurve[0]=%f, nyieldcurve=%d, cdsMaturity=%f, numberPremiumPerYear=%d, numberPremiumPerYear=%d, accruedPremiumFlag=%, h=%f",creditcurve[0],ncreditcurve,yieldcurve[0],nyieldcurve,cdsMaturity,numberPremiumPerYear, numberPremiumPerYear,accruedPremiumFlag,h);*/
+	//Rprintf("creditcurve[0]=%f, ncreditcurve=%d, yieldcurve[0]=%f, nyieldcurve=%d\n",creditcurve[0],ncreditcurve,yieldcurve[0],nyieldcurve);
+	
 	double *creditcurveTenor = &creditcurve[0];
 	//double *creditcurveSurvivalProbability = &creditcurve[ncreditcurve];
 	int max_time_index = ncreditcurve - 1;
@@ -271,6 +280,52 @@ double calculateDefaultLeg(double *creditcurve, int ncreditcurve, double *yieldc
 	}	
 }
 
+
+double objfunFindParSpread(double spread) {
+	double result = 
+	calculatePremiumLeg(globalParamFindParSpread.creditcurve,
+						globalParamFindParSpread.creditcurveLength,
+						globalParamFindParSpread.yieldcurve,
+						globalParamFindParSpread.yieldcurveLength,
+						globalParamFindParSpread.cdsTenor,
+						globalParamFindParSpread.premiumFrequency,
+						globalParamFindParSpread.accruedPremium,
+						spread,
+						globalParamFindParSpread.hazardRate) -
+	calculateDefaultLeg(globalParamFindParSpread.creditcurve,
+						globalParamFindParSpread.creditcurveLength,
+						globalParamFindParSpread.yieldcurve,
+						globalParamFindParSpread.yieldcurveLength,
+						globalParamFindParSpread.cdsTenor,
+						globalParamFindParSpread.defaultFrequency,
+						globalParamFindParSpread.recoveryRate,
+						globalParamFindParSpread.hazardRate);
+	return(result);
+};
+
+double objfunFindHazardRate(double h) {
+	double result = 
+	calculatePremiumLeg(globalParamFindHazardRate.creditcurve,
+						globalParamFindHazardRate.creditcurveLength,
+						globalParamFindHazardRate.yieldcurve,
+						globalParamFindHazardRate.yieldcurveLength,
+						globalParamFindHazardRate.cdsTenor,
+						globalParamFindHazardRate.premiumFrequency,
+						globalParamFindHazardRate.accruedPremium,
+						globalParamFindHazardRate.spread,
+						h) -
+	calculateDefaultLeg(globalParamFindHazardRate.creditcurve,
+						globalParamFindHazardRate.creditcurveLength,
+						globalParamFindHazardRate.yieldcurve,
+						globalParamFindHazardRate.yieldcurveLength,
+						globalParamFindHazardRate.cdsTenor,
+						globalParamFindHazardRate.defaultFrequency,
+						globalParamFindHazardRate.recoveryRate,
+						h);
+	return(result);
+};
+
+// functions exposed to R
 void priceCreditDefaultSwapSpreads(double *yieldcurve, int *nyieldcurve, double *creditcurve, int *ncreditcurve, double *cdsTenors, int *ncdsTenors, int *numberPremiumPerYear, int *numberDefaultIntervalPerYear, int *accruedPremiumFlag, double *recoveryRate, double *spreads, int * warningFlag) {
 	int yieldcurveLength = nyieldcurve[0];
 	int creditcurveLength = ncreditcurve[0];
@@ -285,13 +340,7 @@ void priceCreditDefaultSwapSpreads(double *yieldcurve, int *nyieldcurve, double 
 	double matchep = 2.220446049250313E-016;
 	double t = matchep;
 	
-	for (int i=0; i < cdsTenorsLength; i++) {
-		double objfun(double spread) {
-			double result = calculatePremiumLeg(creditcurve,creditcurveLength,yieldcurve,yieldcurveLength,cdsTenors[i],premiumFrequency,accruedPremium, spread,0) - 
-			calculateDefaultLeg(creditcurve,creditcurveLength,yieldcurve,yieldcurveLength,cdsTenors[i],defaultFrequency,RR,0);
-			return(result);
-		};
-	
+	for (int i=0; i < cdsTenorsLength; i++) {	
 		/*double premleg = calculatePremiumLeg(yieldcurve,yieldcurveLength,creditcurve,creditcurveLength,cdsTenors[i],4,0.0050);
 		double defaultleg = calculateDefaultLeg(yieldcurve,yieldcurveLength,creditcurve,creditcurveLength,cdsTenors[i],4,0.40);
 		double spread = calculateCreditDefaultSwapSpread(yieldcurve,yieldcurveLength,creditcurve,creditcurveLength,cdsTenors[i],4,0.40);
@@ -299,7 +348,18 @@ void priceCreditDefaultSwapSpreads(double *yieldcurve, int *nyieldcurve, double 
 		Rprintf("Default Leg: %f\n",defaultleg);
 		Rprintf("Spread: %f\n",spread);	
 		*/
-		spreads[i] = zero(lower,upper,matchep,t,objfun);
+		globalParamFindParSpread.creditcurve = creditcurve;
+		globalParamFindParSpread.creditcurveLength = creditcurveLength;
+		globalParamFindParSpread.yieldcurve = yieldcurve;
+		globalParamFindParSpread.yieldcurveLength = yieldcurveLength;
+		globalParamFindParSpread.cdsTenor = cdsTenors[i];
+		globalParamFindParSpread.premiumFrequency = premiumFrequency;
+		globalParamFindParSpread.defaultFrequency = defaultFrequency;
+		globalParamFindParSpread.accruedPremium = accruedPremium;
+		globalParamFindParSpread.recoveryRate = RR;
+		globalParamFindParSpread.hazardRate = 0;
+		
+		spreads[i] = zero(lower,upper,matchep,t,objfunFindParSpread);
 		if (spreads[i] == lower || spreads[i] == upper) *warningFlag = 1;
 		
 		//double premleg = calculatePremiumLeg(yieldcurve,yieldcurveLength,creditcurve,creditcurveLength,cdsTenors[i],freq,spreads[i],0);
@@ -307,6 +367,7 @@ void priceCreditDefaultSwapSpreads(double *yieldcurve, int *nyieldcurve, double 
 		//Rprintf("Premium Leg: %f, Default Leg: %f\n",premleg, defaultleg);
 	}	
 }
+
 
 void bootstrapCreditDefaultSwapSpreads(double *yieldcurve, int *nyieldcurve, double *cdsTenors, int *ncdsTenors, double *spreads, int *numberPremiumPerYear, int *numberDefaultIntervalPerYear, int *accruedPremiumFlag, double *recoveryRate, double *output, int * warningFlag) {
 	int yieldcurveLength = nyieldcurve[0];
@@ -329,13 +390,24 @@ void bootstrapCreditDefaultSwapSpreads(double *yieldcurve, int *nyieldcurve, dou
 	double hazrate[cdsTenorsLength];
 	
 	for (int i=0; i < cdsTenorsLength; i++) {		
-		double objfun(double h) {
+		/*double objfun(double h) {
 		double result = calculatePremiumLeg(newcreditcurve,newcreditcurveLength,yieldcurve,yieldcurveLength,cdsTenors[i],premiumFrequency,accruedPremium, spreads[i],h) - calculateDefaultLeg(newcreditcurve,newcreditcurveLength,yieldcurve,yieldcurveLength,cdsTenors[i],defaultFrequency,RR,h);
 			//Rprintf("objfun (h=%f) ==> %f\n",h,result);
 			return(result);
-		};
+		};*/
 		
-		double h = zero(lower,upper,matchep,t,objfun);
+		globalParamFindHazardRate.creditcurve = newcreditcurve;
+		globalParamFindHazardRate.creditcurveLength = newcreditcurveLength;
+		globalParamFindHazardRate.yieldcurve = yieldcurve;
+		globalParamFindHazardRate.yieldcurveLength = yieldcurveLength;
+		globalParamFindHazardRate.cdsTenor = cdsTenors[i];
+		globalParamFindHazardRate.premiumFrequency = premiumFrequency;
+		globalParamFindHazardRate.defaultFrequency = defaultFrequency;
+		globalParamFindHazardRate.accruedPremium = accruedPremium;
+		globalParamFindHazardRate.recoveryRate = RR;
+		globalParamFindHazardRate.spread = spreads[i];
+		
+		double h = zero(lower,upper,matchep,t,objfunFindHazardRate);
 		if (h == lower || h == upper) *warningFlag = 1;
 		
 		/*Rprintf("hazardrate=%f, PremiumLeg=%f , DefaultLeg=%f\n",
@@ -642,4 +714,73 @@ void test5() {
 	
 	Rprintf("h= %f, spread=%f, premLeg=%f, defaultLeg=%f\n",h,spread,premLeg,defaultLeg);		
 
+}
+
+int addInt(int n, int m) {
+    return n+m;
+}
+
+typedef int (*myFuncDef)(int, int);
+
+void test6() {
+	int (*functionPtr)(int,int);
+	functionPtr = &addInt;
+	int sum = (*functionPtr)(2, 3);
+	Rprintf("sum= %d\n",sum);		
+	
+	int add2to3(int (*functionPtr)(int, int)) {
+		return (*functionPtr)(2, 3);
+	}
+	
+	// this is a function called functionFactory which receives parameter n
+	// and returns a pointer to another function which receives two ints
+	// and it returns another int
+	int (*functionFactory(int n))(int, int) {
+		printf("Got parameter %d", n);
+		int (*functionPtr)(int,int) = &addInt;
+		return functionPtr;
+	}
+	
+	myFuncDef functionFactory2(int n) {
+		Rprintf("Got parameter %d\n",n);
+		myFuncDef functionPtr = &addInt;
+		return functionPtr;
+	}
+
+	int sum2 = (functionFactory2(10))(4,7);
+	Rprintf("sum2= %d\n",sum2);
+}
+
+
+
+
+
+double polynom(double x){	
+	double a = myGlobalQuadraticParams.a;
+	double b = myGlobalQuadraticParams.b;
+	double c = myGlobalQuadraticParams.c;
+	
+	return (a * x + b) * x + c;  
+}
+
+//http://www.cs.usfca.edu/~wolber/SoftwareDev/C/CStructs.htm
+void test7() {
+	myGlobalQuadraticParams.a = 1.0;
+	myGlobalQuadraticParams.b = 1.5;
+	myGlobalQuadraticParams.c = -9.0;
+	
+	double x = 2.33;
+	Rprintf("polynom(%f)= %f\n",x,polynom(x));
+	x = 7.8;
+	Rprintf("polynom(%f)= %f\n",x,polynom(x));
+	
+	myGlobalQuadraticParams.a = -1.0;
+	myGlobalQuadraticParams.b = 10.2;
+	myGlobalQuadraticParams.c = -2.0;
+	
+	x = 2.33;
+	Rprintf("polynom(%f)= %f\n",x,polynom(x));
+	x = 7.8;
+	Rprintf("polynom(%f)= %f\n",x,polynom(x));
+	
 }
