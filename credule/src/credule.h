@@ -1,8 +1,3 @@
-struct quadratic_params
-{
-	double a, b, c;
-};
-
 struct paramFindParSpread
 {
 	double *creditcurve;

@@ -1,10 +1,10 @@
 Package: credule
-Version: 0.1.1
-Date: 2015-07-16
+Version: 0.1.2
+Date: 2015-07-27
 Title: Credit Default Swap Functions
-Authors@R: c(person("Bertrand", "Le Nezet", role = c("cre","ctb", "cph"), email = "bertrand.lenezet@gmail.com" ),
-             person("Richard", "Brent", role = "cph"),
-			 person("John", "Burkardt", role = "cph"))
+Authors@R: c(person("Bertrand", "Le Nezet", role = c("cre","aut", "cph"), email = "bertrand.lenezet@gmail.com" ),
+             person("Richard", "Brent", role = c("ctb", "cph")),
+			 person("John", "Burkardt", role = c("ctb", "cph")))
 Maintainer: Bertrand Le Nezet <bertrand.lenezet@gmail.com>
 Depends: R (>= 2.14.1)
 Description: One function to bootstrap a credit curve from market quotes (Credit Default Swap spreads) and another function to price Credit Default Swaps from a credit curve.
