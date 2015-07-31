@@ -3,18 +3,49 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Credit Default Swap Pricing}
 \description{
-    A function that calculate the spreads of a list of Credit Default Swap from a yield curve and a credit curve.
+    A function that calculates the spreads of several Credit Default Swaps (different maturities) from a yield curve and a credit curve.
+}
+\details{
+In brief, a CDS is used to transfer the credit risk of a reference entity (corporate or sovereign) from one party to another. In a standard CDS contract one party purchases credit protection from another party, to cover the loss of the face value of an asset following a credit event. A credit event is a
+legally defined event that typically includes bankruptcy, failure-to-pay and restructuring. This protection lasts until some specified maturity date. To pay for this protection, the protection buyer makes a regular stream of payments, known as the premium leg, to the protection seller. This size of these premium payments is calculated from a quoted default swap spread which is paid on the face value of the protection. These payments are made until a credit event occurs or until maturity, whichever occurs first.
+
+\bold{Modeling Credit Using a Reduced-Form Approach}
+The world of credit modelling is divided into two main approaches, one called the structural and the other called the reduced-form. In the structural approach, the idea is to characterize the default as being the consequence of some company event such as its asset value being insufficient to cover a repayment of debt.
+
+Structural models are generally used to say at what spread corporate bonds should trade based on the internal structure of the firm. They therefore require information about the balance sheet of the firm and can be used to establish a link between pricing in the equity and debt markets. However, they are limited 
+in at least three important ways: they are hard to calibrate because internal company data is only published at most four times a year; they generally lack the flexibility to fit exactly a given term structure of spreads; and they cannot be easily extended to price credit derivatives.
+
+In the reduced-form approach, the credit event process is modeled directly by modeling the probability of the credit event itself. Using a security pricing model based on this approach, this probability of default can be extracted from market prices. Reduced form models also generally have the flexibility to refit the prices of a variety of credit instruments of different maturities. They can also be extended to price more exotic credit derivatives. It is for these reasons that they are used for credit derivative pricing.
+
+The most widely used reduced-form approach is based on the work of Jarrow and Turnbull (1995), who characterize a credit event as the first event of a Poisson counting process which occurs at some time τ with a probability defined as
+
+\eqn{\text{Pr}\left[\tau<t+dt\,|\,\tau\geq t\right]=\lambda(t)dt} 
+
+the probability of a default occurring within the time interval [t,t+dt) conditional on surviving to time t, is proportional to some time dependent function \eqn{\lambda(t)}, known as the hazard rate, and the length of the time interval dt. We can therefore think of modelling default in a one-period setting as a simple binomial tree in which we survive with probability \eqn{1-\lambda(t)dt} or default and receive a recovery value R with probability \eqn{\lambda(t)dt}. We make the simplifying assumption that the hazard rate process is deterministic. By extension, this assumption also implies that the hazard rate is independent of interest rates
+and recovery rates. 
+
+\bold{Valuing the Premium Leg}
+
+The premium leg is the series of payments of the default swap spread made to maturity or to the time of the credit event, whichever occurs first. It also includes the payment of premium accrued from the previous premium payment date until the time of the credit event. Assume that there are n=1,... ,N contractual payment dates t1,... ,tN where tN is the maturity date of the default swap. 
+
+The present value of the premium leg is given by:
+
+\eqn{\text{Premium Leg PV}(t_{V},t_{N})=S(t_{0},t_{N})\sum_{n=1}^{N}\Delta(t_{n-1},t_{n},B)Z(t_{V},t_{n})\left[Q(t_{V},t_{n})+\frac{1_{PA}}{2}(Q(t_{V},t_{n-1})-Q(t_{V},t_{n}))\right]}
+
+
+\bold{Valuing the Protection Leg}
+
+
+
+The present value of the protection leg is given by: 
+
+\eqn{\text{Protection Leg PV}(t_{V},t_{N})=(1-R)\sum_{m=1}^{M\times t_{N}}Z(t_{V},t_{m})\left(Q(t_{V},t_{m-1})-Q(t_{V},t_{m})\right)}
+
 }
 \usage{
-priceCDS(yieldcurveTenor,
-		 yieldcurveRate,
-		 creditcurveTenor,
-		 creditcurveSP,
-		 cdsTenors,
-		 recoveryRate,
-		 numberPremiumPerYear = c(4,2,1,12),
-		 numberDefaultIntervalPerYear = 12,
-		 accruedPremium = c(TRUE,FALSE)) 
+priceCDS(yieldcurveTenor, yieldcurveRate, creditcurveTenor, creditcurveSP,
+		 cdsTenors, recoveryRate, numberPremiumPerYear = c(4,2,1,12),
+		 numberDefaultIntervalPerYear = 12, accruedPremium = c(TRUE,FALSE)) 
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -81,3 +112,4 @@ priceCDS(yieldcurveTenor,
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{CDS, Credit Default Swap, pricing}
+

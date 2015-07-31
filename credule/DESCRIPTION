@@ -7,6 +7,9 @@ Authors@R: c(person("Bertrand", "Le Nezet", role = c("cre","aut", "cph"), email 
 			 person("John", "Burkardt", role = c("ctb", "cph")))
 Maintainer: Bertrand Le Nezet <bertrand.lenezet@gmail.com>
 Depends: R (>= 2.14.1)
-Description: One function to bootstrap a credit curve from market quotes (Credit Default Swap spreads) and another function to price Credit Default Swaps from a credit curve.
+Description: Credit Curve boostrapping from market quotes (Credit Default Swap - CDS - spreads) and Credit Default Swap - CDS - pricing
 License: MIT + file LICENSE
-
+URL: https://github.com/lampalork/credule
+BugReports: https://github.com/lampalork/credule/issues
+Suggests: knitr
+VignetteBuilder: knitr
