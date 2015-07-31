@@ -39,3 +39,4 @@
 credule.Rcheck/
 credule/src-i386/
 credule/src-x64/
+credule/.Rd2pdf
