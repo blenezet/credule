@@ -8,11 +8,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
-<meta name="author" content="Vignette Author" />
+<meta name="author" content="Bertrand Le Nezet" />
 
-<meta name="date" content="2015-07-31" />
+<meta name="date" content="2015-08-03" />
 
-<title>Credit Curve bootstrapping</title>
+<title>Credit Curve Bootstrapping</title>
 
 
 
@@ -52,218 +52,353 @@ code > span.er { color: #ff0000; font-weight: bold; }
 
 
 <div id="header">
-<h1 class="title">Credit Curve bootstrapping</h1>
-<h4 class="author"><em>Vignette Author</em></h4>
-<h4 class="date"><em>2015-07-31</em></h4>
+<h1 class="title">Credit Curve Bootstrapping</h1>
+<h4 class="author"><em>Bertrand Le Nezet</em></h4>
+<h4 class="date"><em>2015-08-03</em></h4>
 </div>
 
 
-<p>Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The <code>html_vignette</code> output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The <code>html_vignette</code> format:</p>
-<ul>
-<li>Never uses retina figures</li>
-<li>Has a smaller default figure size</li>
-<li>Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style</li>
-</ul>
-<p><span class="math">\(\frac{1}{n} \sum_{i=i}^{n{ x_{i}\)</span></p>
-<p><span class="math">\(1 + 1\)</span></p>
-<p><span class="math">\[D_{KL}(P\Vert Q)=\int_{-\infty}^{\infty}p(x)\ln\frac{p(x)}{q(x)}dx\]</span></p>
-<p><span class="math">\[ Y = \beta_0 + \beta_1 x + \epsilon\]</span></p>
-<div id="vignette-info" class="section level2">
-<h2>Vignette Info</h2>
-<p>Note the various macros within the <code>vignette</code> section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the <code>title</code> field and the <code>\VignetteIndexEntry</code> to match the title of your vignette.</p>
-</div>
-<div id="styles" class="section level2">
-<h2>Styles</h2>
-<p>The <code>html_vignette</code> template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:</p>
-<pre><code>output: 
-  rmarkdown::html_vignette:
-    css: mystyles.css</code></pre>
-</div>
-<div id="figures" class="section level2">
-<h2>Figures</h2>
-<p>The figure sizes have been customised so that you can easily put two images side-by-side.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="dv">1</span>:<span class="dv">10</span>)
-<span class="kw">plot</span>(<span class="dv">10</span>:<span class="dv">1</span>)</code></pre>
-<p><img src="data:image/png;base64,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" /> <img src="data:image/png;base64,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" /></p>
-<p>You can enable figure captions by <code>fig_caption: yes</code> in YAML:</p>
-<pre><code>output:
-  rmarkdown::html_vignette:
-    fig_caption: yes</code></pre>
-<p>Then you can use the chunk option <code>fig.cap = &quot;Your figure caption.&quot;</code> in <strong>knitr</strong>.</p>
-</div>
-<div id="more-examples" class="section level2">
-<h2>More Examples</h2>
-<p>You can write math expressions, e.g. <span class="math">\(Y = X\beta + \epsilon\)</span>, footnotes<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>, and tables, e.g. using <code>knitr::kable()</code>.</p>
+<p>We will first explain how credit curves are constructed before showing how the credule package can be used to construct credit curves from the CDS quotes. We will look at 2 specific US Issuers as of 27 May 2014: Pfizer (Pfizer Inc - PFE) and Radioshak (RadioShack Corp - RSH).</p>
+<div id="credit-curve-bootstrapping-methodology" class="section level2">
+<h2>Credit Curve Bootstrapping Methodology</h2>
+<div id="hazard-rate-and-survival-probability" class="section level3">
+<h3>Hazard rate and Survival Probability</h3>
+<p>The reduced-form model that we use here is based on the work of Jarrow and Turnbull (1995), who characterize a credit event as the first event of a Poisson counting process which occurs at some time t with a probability defined as :</p>
+<p><span class="math">\(\text{Pr}\left[\tau&lt;t+dt\,|\,\tau\geq t\right]=\lambda(t)dt\)</span></p>
+<p>the probability of a default occurring within the time interval [t,t+dt) conditional on surviving to time t, is proportional to some time dependent function <span class="math">\(\lambda(t)\)</span>, known as the hazard rate, and the length of the time interval dt. We make the simplifying assumption that the hazard rate process is deterministic. By extension, this assumption also implies that the hazard rate is independent of interest rates and recovery rates. From this definition, we can calculate the continuous time survival probability to the time <span class="math">\(T\)</span> conditional on surviving to the valuation time <span class="math">\(t_{V}\)</span> by considering the limit <span class="math">\(\rightarrow0\)</span>. It can be shown that the survival probability is given by:</p>
+<p><span class="math">\(Q(t_{V},T)=\exp\left(-\int_{t_{V}}^{T}\lambda(s)\, ds\right)\)</span></p>
+<p>Finally, we assume that the hazard rate function is a step-wise constant function. In the below example, the hazard rate between time 0 and 1Y is <span class="math">\(h_{0,1}=1\%\)</span> and the hazard rate between between 1Y and 3Y is <span class="math">\(h_{1,3}=2.5\%\)</span>. Therefore we have the 1Y survival probability <span class="math">\(Q_{0,1}=exp(-h_{0,1}\times1)=99\%\)</span> and the 3Y survival probability <span class="math">\(Q_{1,3}=Q_{0,1}*exp(-h_{1,3}\times2)=91.9\%\)</span>.</p>
 <table>
+<caption>Example of step-wise constant hazard rate function</caption>
 <thead>
 <tr class="header">
-<th align="left"></th>
-<th align="right">mpg</th>
-<th align="right">cyl</th>
-<th align="right">disp</th>
-<th align="right">hp</th>
-<th align="right">drat</th>
-<th align="right">wt</th>
-<th align="right">qsec</th>
-<th align="right">vs</th>
-<th align="right">am</th>
-<th align="right">gear</th>
-<th align="right">carb</th>
+<th align="left">tenor</th>
+<th align="left">hazardrate</th>
+<th align="left">survprob</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">Mazda RX4</td>
-<td align="right">21.0</td>
-<td align="right">6</td>
-<td align="right">160.0</td>
-<td align="right">110</td>
-<td align="right">3.90</td>
-<td align="right">2.620</td>
-<td align="right">16.46</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="right">4</td>
+<td align="left">1</td>
+<td align="left">1.0%</td>
+<td align="left">99.0%</td>
 </tr>
 <tr class="even">
-<td align="left">Mazda RX4 Wag</td>
-<td align="right">21.0</td>
-<td align="right">6</td>
-<td align="right">160.0</td>
-<td align="right">110</td>
-<td align="right">3.90</td>
-<td align="right">2.875</td>
-<td align="right">17.02</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="right">4</td>
+<td align="left">3</td>
+<td align="left">2.5%</td>
+<td align="left">91.9%</td>
 </tr>
 <tr class="odd">
-<td align="left">Datsun 710</td>
-<td align="right">22.8</td>
-<td align="right">4</td>
-<td align="right">108.0</td>
-<td align="right">93</td>
-<td align="right">3.85</td>
-<td align="right">2.320</td>
-<td align="right">18.61</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="right">1</td>
+<td align="left">5</td>
+<td align="left">3.0%</td>
+<td align="left">79.1%</td>
 </tr>
 <tr class="even">
-<td align="left">Hornet 4 Drive</td>
-<td align="right">21.4</td>
-<td align="right">6</td>
-<td align="right">258.0</td>
-<td align="right">110</td>
-<td align="right">3.08</td>
-<td align="right">3.215</td>
-<td align="right">19.44</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">1</td>
-</tr>
-<tr class="odd">
-<td align="left">Hornet Sportabout</td>
-<td align="right">18.7</td>
-<td align="right">8</td>
-<td align="right">360.0</td>
-<td align="right">175</td>
-<td align="right">3.15</td>
-<td align="right">3.440</td>
-<td align="right">17.02</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td align="left">Valiant</td>
-<td align="right">18.1</td>
-<td align="right">6</td>
-<td align="right">225.0</td>
-<td align="right">105</td>
-<td align="right">2.76</td>
-<td align="right">3.460</td>
-<td align="right">20.22</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">1</td>
-</tr>
-<tr class="odd">
-<td align="left">Duster 360</td>
-<td align="right">14.3</td>
-<td align="right">8</td>
-<td align="right">360.0</td>
-<td align="right">245</td>
-<td align="right">3.21</td>
-<td align="right">3.570</td>
-<td align="right">15.84</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">4</td>
-</tr>
-<tr class="even">
-<td align="left">Merc 240D</td>
-<td align="right">24.4</td>
-<td align="right">4</td>
-<td align="right">146.7</td>
-<td align="right">62</td>
-<td align="right">3.69</td>
-<td align="right">3.190</td>
-<td align="right">20.00</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">4</td>
-<td align="right">2</td>
-</tr>
-<tr class="odd">
-<td align="left">Merc 230</td>
-<td align="right">22.8</td>
-<td align="right">4</td>
-<td align="right">140.8</td>
-<td align="right">95</td>
-<td align="right">3.92</td>
-<td align="right">3.150</td>
-<td align="right">22.90</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">4</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td align="left">Merc 280</td>
-<td align="right">19.2</td>
-<td align="right">6</td>
-<td align="right">167.6</td>
-<td align="right">123</td>
-<td align="right">3.92</td>
-<td align="right">3.440</td>
-<td align="right">18.30</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">4</td>
-<td align="right">4</td>
+<td align="left">7</td>
+<td align="left">4.0%</td>
+<td align="left">59.8%</td>
 </tr>
 </tbody>
 </table>
-<p>Also a quote using <code>&gt;</code>:</p>
-<blockquote>
-<p>“He who gives up [code] safety for [code] speed deserves neither.” (<a href="https://twitter.com/hadleywickham/status/504368538874703872">via</a>)</p>
-</blockquote>
+<p><img src="data:image/png;base64,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" /> <img src="data:image/png;base64,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" /></p>
 </div>
-<div class="footnotes">
-<hr />
-<ol>
-<li id="fn1"><p>A footnote here.<a href="#fnref1">↩</a></p></li>
-</ol>
+<div id="valuing-the-premium-leg" class="section level3">
+<h3>Valuing the Premium Leg</h3>
+<p>The premium leg is the series of payments of the default swap spread made to maturity or to the time of the credit event, whichever occurs first. It also includes the payment of premium accrued from the previous premium payment date until the time of the credit event. Assume that there are <span class="math">\(n=1,...,N\)</span> contractual payment dates <span class="math">\(t_1,... ,t_N\)</span> where <span class="math">\(t_N\)</span> is the maturity date of the default swap.</p>
+<p>The present value of the premium leg is given by:</p>
+<p><span class="math">\(\text{PL PV}(t_{V},t_{N})=S(t_{0},t_{N})\sum_{n=1}^{N}\Delta(t_{n-1},t_{n},B)Z(t_{V},t_{n})\left[Q(t_{V},t_{n})+\frac{1_{PA}}{2}(Q(t_{V},t_{n-1})-Q(t_{V},t_{n}))\right]\)</span></p>
+<p>where:</p>
+<ul>
+<li>N is the total number of premiums. <span class="math">\(n=1,\ldots,N\)</span> is the index for these premiums; premium dates are denoted <span class="math">\(t_{1},\ldots,t_{N}\)</span>. <span class="math">\(t_{N}\)</span> is the maturity date of the swap</li>
+<li><span class="math">\(S(t_{0},t_{N})\)</span> is the spread of a Credit Default Swap that matures on <span class="math">\(t_{N}\)</span></li>
+<li><span class="math">\(\Delta(t_{n-1},t_{n},B)\)</span> is the day count fraction between premium dates <span class="math">\(t_{n-1}\)</span> and <span class="math">\(t_{n}\)</span> in the appropriate basis convention denoted by B (ACT/360 in our model)</li>
+<li><span class="math">\(Q(t_{V},t_{n})\)</span> is the arbitrage-free survival probability of the reference entity from valuation time <span class="math">\(t_{V}\)</span> to premium time <span class="math">\(t_{n}\)</span></li>
+<li><span class="math">\(Z(t_{V},t_{n})\)</span> is the risk-free discount factor from valuation date to the premium date <span class="math">\(n\)</span></li>
+<li><span class="math">\(1_{PA}\)</span>equals 1 if premium accrued (PA) are included in the premium leg calculation, 0 otherwise.</li>
+</ul>
+</div>
+<div id="valuing-the-default-leg" class="section level3">
+<h3>Valuing the Default Leg</h3>
+<p>The default leg (or protection leg) is the contingent payment of (100% – R) on the face value of the protection made following the credit event. R is the expected recovery rate. In pricing the default leg, it is important to take into account the timing of the credit event because this can have a significant effect on the present value of the protection leg especially for longer maturity default swaps. Within the hazard rate approach we can solve this timing problem by conditioning on each small time interval <span class="math">\([s,s+ds]\)</span> between time <span class="math">\(t_V\)</span> and time <span class="math">\(t_N\)</span> at which the credit event can occur. We calculate the expected present value of the recovery payment as:</p>
+<p><span class="math">\(\text{DL PV}(t_{V},t_{N})=(1-R)\int_{t_{V}}^{t_{N}}Z(t_{V},s)Q(t_{V},s)\lambda(s)ds\)</span></p>
+<p>The integral, makes this expression tedious to evaluate. It is possible to show that we can, without any material loss of accuracy, simply assume that the credit event can only occur on a finite number M of discrete points per year. In this case, the default leg value can be expressed as:</p>
+<p><span class="math">\(\text{DL PV}(t_{V},t_{N})=(1-R)\sum_{m=1}^{M\times t_{N}}Z(t_{V},t_{m})\left(Q(t_{V},t_{m-1})-Q(t_{V},t_{m})\right)\)</span></p>
+<p>where:</p>
+<ul>
+<li>M is the number of discrete points per year on which we assume a credit event can happen. <span class="math">\(t_{N}\)</span> is the maturity of the swap. <span class="math">\(m=1,\ldots,M\times t_{N}\)</span> is the index the discrete point on which a credit event can happen between the valuation date and the maturity of the swap. We choose <span class="math">\(M=12\)</span> (monthly discretization) to keep the computation lightweight. [TurnO’k03] compares the results of a daily discretization (M=365) and a monthly discretization (M=12) and shows that monthly intervals has an absolute error which is well inside the bid-offer spread; hence monthly discretization can be used to keep the model fast and simple.</li>
+<li><span class="math">\(R\)</span> is the recovery rate</li>
+<li><span class="math">\(Q(t_{V},t_{m})\)</span> is the arbitrage-free survival probability of the reference entity from valuation time <span class="math">\(t_{V}\)</span> to premium time <span class="math">\(t_{m}\)</span></li>
+<li><span class="math">\(Z(t_{V},t_{m})\)</span> is the risk-free discount factor from valuation date to the date m</li>
+</ul>
+</div>
+<div id="calibration-of-the-credit-curve" class="section level3">
+<h3>Calibration of the Credit Curve</h3>
+<p>Calibration of the model imply finding an hazard rate (non-cumulative hazard rate) function that matches the market CDS spreads. We make the following assumptions:</p>
+<ul>
+<li>Swap premium payments are made quarterly following a business day calendar</li>
+<li>Hazard rate is a piece-wise constant function of time (i.e. hazard rates are independent from interest rates)</li>
+<li>Recovery rate is constant</li>
+</ul>
+<p>The construction of the hazard rate term structure is done by an iterative process called bootstrapping. Let’s assume we have quotes for 1Y, 3Y, 5Y and 7Y for a given issuer. From the 1Y CDS spread <span class="math">\(s_1Y\)</span>, we will find the hazard rate <span class="math">\(\lambda_{0,1}\)</span> which equates the present value of the premium leg and of the protection leg. From the 3Y spread <span class="math">\(s_3Y\)</span>, we will find the hazard rate <span class="math">\(\lambda_{1,3}\)</span> which equates the present value of the premium leg to the present value of the protection leg. By iterating this process, we obtain the hazard rates: <em>{0,1},</em>{1,3},<em>{3,5},</em>{5,7}. We can also easily calculate the survival probabilities from this hazard rate term structure (as we have seen earlier).</p>
+</div>
+</div>
+<div id="market-data" class="section level2">
+<h2>Market data</h2>
+<pre class="sourceCode r"><code class="sourceCode r">yieldcurveTenor =<span class="st"> </span><span class="kw">c</span>(<span class="fl">1.0</span>,<span class="fl">2.0</span>,<span class="fl">3.0</span>,<span class="fl">4.0</span>,<span class="fl">5.0</span>,<span class="fl">7.0</span>,
+                    <span class="fl">10.0</span>,<span class="fl">15.0</span>,<span class="fl">20.0</span>,<span class="fl">30.0</span>)
+yieldcurveRate =<span class="st"> </span><span class="kw">c</span>(<span class="fl">0.002585</span>,<span class="fl">0.005034</span>,<span class="fl">0.008981</span>,<span class="fl">0.012954</span>,<span class="fl">0.016452</span>,
+                   <span class="fl">0.021811</span>,<span class="fl">0.027007</span>,<span class="fl">0.031718</span>,<span class="fl">0.033834</span>,<span class="fl">0.035056</span>)</code></pre>
+<table>
+<caption>USD yield curve (%) as of 27 May 2014</caption>
+<thead>
+<tr class="header">
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+<th align="left">7</th>
+<th align="left">10</th>
+<th align="left">15</th>
+<th align="left">20</th>
+<th align="left">30</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">0.26%</td>
+<td align="left">0.50%</td>
+<td align="left">0.90%</td>
+<td align="left">1.30%</td>
+<td align="left">1.65%</td>
+<td align="left">2.18%</td>
+<td align="left">2.70%</td>
+<td align="left">3.17%</td>
+<td align="left">3.38%</td>
+<td align="left">3.51%</td>
+</tr>
+</tbody>
+</table>
+<pre class="sourceCode r"><code class="sourceCode r">cdsTenor =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">10</span>,<span class="dv">15</span>,<span class="dv">20</span>,<span class="dv">30</span>)
+cdsSpread_PFE =<span class="st"> </span><span class="kw">c</span>(<span class="fl">0.0003</span>,<span class="fl">0.0009</span>,<span class="fl">0.0015</span>,<span class="fl">0.0021</span>,<span class="fl">0.0028</span>,<span class="fl">0.0043</span>,<span class="fl">0.0061</span>,<span class="fl">0.0063</span>,  <span class="fl">0.0068</span>,<span class="fl">0.0066</span>)</code></pre>
+<table>
+<caption>Pfizer (PFE) CDS spreads (basis points) as of 27 May 2014</caption>
+<thead>
+<tr class="header">
+<th align="right">1</th>
+<th align="right">2</th>
+<th align="right">3</th>
+<th align="right">4</th>
+<th align="right">5</th>
+<th align="right">7</th>
+<th align="right">10</th>
+<th align="right">15</th>
+<th align="right">20</th>
+<th align="right">30</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">3</td>
+<td align="right">9</td>
+<td align="right">15</td>
+<td align="right">21</td>
+<td align="right">28</td>
+<td align="right">43</td>
+<td align="right">61</td>
+<td align="right">63</td>
+<td align="right">68</td>
+<td align="right">66</td>
+</tr>
+</tbody>
+</table>
+<pre class="sourceCode r"><code class="sourceCode r">cdsTenor =<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">7</span>,<span class="dv">10</span>,<span class="dv">15</span>,<span class="dv">20</span>,<span class="dv">30</span>)
+cdsSpread_RSH =<span class="st"> </span><span class="kw">c</span>(<span class="fl">0.6405</span>,<span class="fl">0.5956</span>,<span class="fl">0.5511</span>,<span class="fl">0.5144</span>,<span class="fl">0.4894</span>,<span class="fl">0.4511</span>,<span class="fl">0.4156</span>,<span class="fl">0.3815</span>,<span class="fl">0.3657</span>,<span class="fl">0.3506</span>)</code></pre>
+<table>
+<caption>Radioshack (RSH) CDS spreads (basis points) as of 27 May 2014</caption>
+<thead>
+<tr class="header">
+<th align="right">1</th>
+<th align="right">2</th>
+<th align="right">3</th>
+<th align="right">4</th>
+<th align="right">5</th>
+<th align="right">7</th>
+<th align="right">10</th>
+<th align="right">15</th>
+<th align="right">20</th>
+<th align="right">30</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">6405</td>
+<td align="right">5956</td>
+<td align="right">5511</td>
+<td align="right">5144</td>
+<td align="right">4894</td>
+<td align="right">4511</td>
+<td align="right">4156</td>
+<td align="right">3815</td>
+<td align="right">3657</td>
+<td align="right">3506</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="credit-curves" class="section level2">
+<h2>Credit Curves</h2>
+<div id="radioshack-corp-27-may-2014" class="section level3">
+<h3>RadioShack Corp, 27 May 2014</h3>
+<pre class="sourceCode r"><code class="sourceCode r">creditcurve_RSH =<span class="st"> </span><span class="kw">bootstrapCDS</span>(yieldcurveTenor, yieldcurveRate, 
+                   cdsTenor, cdsSpread_RSH,
+                   RR, premiumFrequency, defaultFrequency, accruedPremium)</code></pre>
+<table>
+<caption>RadioShack Corp Credit Curve</caption>
+<thead>
+<tr class="header">
+<th align="left">tenor</th>
+<th align="left">survprob</th>
+<th align="left">hazrate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">34.2%</td>
+<td align="left">107%</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left">15.4%</td>
+<td align="left">80%</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">10.2%</td>
+<td align="left">41%</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">8.5%</td>
+<td align="left">19%</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">6.9%</td>
+<td align="left">20%</td>
+</tr>
+<tr class="even">
+<td align="left">7</td>
+<td align="left">5.7%</td>
+<td align="left">10%</td>
+</tr>
+<tr class="odd">
+<td align="left">10</td>
+<td align="left">4.4%</td>
+<td align="left">9%</td>
+</tr>
+<tr class="even">
+<td align="left">15</td>
+<td align="left">3.4%</td>
+<td align="left">5%</td>
+</tr>
+<tr class="odd">
+<td align="left">20</td>
+<td align="left">2.1%</td>
+<td align="left">9%</td>
+</tr>
+<tr class="even">
+<td align="left">30</td>
+<td align="left">1.4%</td>
+<td align="left">4%</td>
+</tr>
+</tbody>
+</table>
+<p><img src="data:image/png;base64,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" /></p>
+</div>
+<div id="pfizer-inc-27-may-2014" class="section level3">
+<h3>Pfizer Inc, 27 May 2014</h3>
+<pre class="sourceCode r"><code class="sourceCode r">creditcurve_PFE =<span class="st"> </span><span class="kw">bootstrapCDS</span>(yieldcurveTenor, yieldcurveRate, 
+                   cdsTenor, cdsSpread_PFE,
+                   RR, premiumFrequency, defaultFrequency, accruedPremium)</code></pre>
+<table>
+<caption>Pfizer Inc Credit Curve</caption>
+<thead>
+<tr class="header">
+<th align="left">tenor</th>
+<th align="left">survprob</th>
+<th align="left">hazrate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">100.0%</td>
+<td align="left">0.05%</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left">99.7%</td>
+<td align="left">0.25%</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">99.2%</td>
+<td align="left">0.45%</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">98.6%</td>
+<td align="left">0.66%</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">97.6%</td>
+<td align="left">0.96%</td>
+</tr>
+<tr class="even">
+<td align="left">7</td>
+<td align="left">94.9%</td>
+<td align="left">1.42%</td>
+</tr>
+<tr class="odd">
+<td align="left">10</td>
+<td align="left">89.7%</td>
+<td align="left">1.89%</td>
+</tr>
+<tr class="even">
+<td align="left">15</td>
+<td align="left">84.7%</td>
+<td align="left">1.14%</td>
+</tr>
+<tr class="odd">
+<td align="left">20</td>
+<td align="left">78.4%</td>
+<td align="left">1.56%</td>
+</tr>
+<tr class="even">
+<td align="left">30</td>
+<td align="left">71.3%</td>
+<td align="left">0.95%</td>
+</tr>
+</tbody>
+</table>
+<p><img src="data:image/png;base64,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" alt="Your figure caption." /></p>
+</div>
+<div id="conclusion" class="section level3">
+<h3>Conclusion</h3>
+<p>It is interesting to compare the credit curve of these 2 issuers. A quick look at the 5Y spreads (market benchmark) shows that one issuer is much more risky than the other. Pfizer 5Y spread is at 28bp (i.e. 0.28%), this is a pretty low CDS spreads (only 3bp more than the 5Y CDS on a sovereign like Finland, as of 3 August 2015). Radioshak 5Y spread is at 4894bp (i.e. 48.94%) which is a very very high CDS spread. As a comparison, it is more than two times than the Greece 5Y CDS as of 3 August 2015 (2203.70bp).</p>
+<p>Futhermore, we can observe than the hazard rate does not have the same dynamic for both issuers. For Pfizer, the hazard rate curve is upward sloping (i.e hazard rate increase over time) whereas for Radioshack, the hazard rate curve is downward sloping. Downward sloping curve is commonly observed for stressed assets/speculative-grade firms (Radioshak rating is CCC as of 27 May 2014) and it translates the investors’s expecation of a short term default. In other words, investors think that the issuer has room to improve with age (become less risky) or less potential to worsen considering that it is very risky today.</p>
+</div>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<ul>
+<li>JP Morgan. Credit Derivatives: A Primer. JP Morgan Credit Derivatives and Quantitative Research (January 2005)</li>
+<li>D. O'kane and S. Turnbull. Valuation of Credit Default Swaps. Lehman Brothers Quantitative Credit Research (Apr. 2003)</li>
+<li>Standard CDS Examples. Supporting document for the Implementation of the ISDA CDS Standard Model (Oct. 2012)</li>
+</ul>
 </div>
 
 

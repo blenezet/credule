@@ -26,11 +26,7 @@ and recovery rates.
 
 \bold{Valuing the Premium Leg}
 
-The premium leg is the series of payments of the default swap spread made to maturity or to the time of the credit event, whichever occurs first. It also includes the payment of premium accrued from the previous premium payment date until the time of the credit event. Assume that there are n=1,... ,N contractual payment dates t1,... ,tN where tN is the maturity date of the default swap. 
 
-The present value of the premium leg is given by:
-
-\eqn{\text{Premium Leg PV}(t_{V},t_{N})=S(t_{0},t_{N})\sum_{n=1}^{N}\Delta(t_{n-1},t_{n},B)Z(t_{V},t_{n})\left[Q(t_{V},t_{n})+\frac{1_{PA}}{2}(Q(t_{V},t_{n-1})-Q(t_{V},t_{n}))\right]}
 
 
 \bold{Valuing the Protection Leg}
