@@ -17,25 +17,7 @@ in at least three important ways: they are hard to calibrate because internal co
 
 In the reduced-form approach, the credit event process is modeled directly by modeling the probability of the credit event itself. Using a security pricing model based on this approach, this probability of default can be extracted from market prices. Reduced form models also generally have the flexibility to refit the prices of a variety of credit instruments of different maturities. They can also be extended to price more exotic credit derivatives. It is for these reasons that they are used for credit derivative pricing.
 
-The most widely used reduced-form approach is based on the work of Jarrow and Turnbull (1995), who characterize a credit event as the first event of a Poisson counting process which occurs at some time τ with a probability defined as
-
-\eqn{\text{Pr}\left[\tau<t+dt\,|\,\tau\geq t\right]=\lambda(t)dt} 
-
-the probability of a default occurring within the time interval [t,t+dt) conditional on surviving to time t, is proportional to some time dependent function \eqn{\lambda(t)}, known as the hazard rate, and the length of the time interval dt. We can therefore think of modelling default in a one-period setting as a simple binomial tree in which we survive with probability \eqn{1-\lambda(t)dt} or default and receive a recovery value R with probability \eqn{\lambda(t)dt}. We make the simplifying assumption that the hazard rate process is deterministic. By extension, this assumption also implies that the hazard rate is independent of interest rates
-and recovery rates. 
-
-\bold{Valuing the Premium Leg}
-
-
-
-
-\bold{Valuing the Protection Leg}
-
-
-
-The present value of the protection leg is given by: 
-
-\eqn{\text{Protection Leg PV}(t_{V},t_{N})=(1-R)\sum_{m=1}^{M\times t_{N}}Z(t_{V},t_{m})\left(Q(t_{V},t_{m-1})-Q(t_{V},t_{m})\right)}
+See \code{vignette("credule")} for more details.
 
 }
 \usage{
@@ -107,5 +89,5 @@ priceCDS(yieldcurveTenor,
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{CDS, Credit Default Swap, pricing}
+\keyword{ Credit Default Swap, Credit Default Swaps, CDS, spread, survival probability, survival probabilities, default probability, default probabilities, pricing, credit curve, bootstrapping, hazard rate, poisson process}
 

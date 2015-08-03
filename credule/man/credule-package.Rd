@@ -11,8 +11,8 @@ Credit Curve boostrapping from market quotes (Credit Default Swap - CDS - spread
 \tabular{ll}{
 Package: \tab credule\cr
 Type: \tab Package\cr
-Version: \tab 0.1.2\cr
-Date: \tab 2015-07-16\cr
+Version: \tab 0.1.3\cr
+Date: \tab 2015-08-03\cr
 License: \tab MIT + file LICENSE\cr
 }
 
@@ -26,14 +26,15 @@ operational efficiency.
 
 The CDS "Big Bang" has introduced standardized coupon dates and maturity dates. The functions provided in this package do not use these "new" conventions (i.e. they use the conventions pre-April 2008); therefore it's not recommended to use them in a production context. In most cases the differences are marginal, therefore these functions are good enough for preliminary research. 
 
+See \code{vignette("credule")} for more details.
+
 Note. I'm planning to update this package with proper CDS ISDA conventions handling at a later stage.
 }
 \author{
 Bertrand Le Nezet
-
 Maintainer: Bertrand Le Nezet <bertrand dot lenezet at gmail dot com>
 }
-\keyword{ Credit Default Swap, Credit Default Swaps, CDS, spread, survival probability, survival probabilities, default probability, default probabilities, pricing, credit curve, bootstrapping, hazard rate}
+\keyword{ Credit Default Swap, Credit Default Swaps, CDS, spread, survival probability, survival probabilities, default probability, default probabilities, pricing, credit curve, bootstrapping, hazard rate, poisson process}
 \examples{
 library(credule)
 
@@ -74,7 +75,7 @@ res_bootstrap
 
 }
 \references{
-  ISDA Standard CDS Example \url{http://www.cdsmodel.com/cdsmodel/assets/cds-model/docs/Standard CDS Examples.pdf}
+  ISDA Standard CDS Example \url{http://www.cdsmodel.com/cdsmodel/assets/cds-model/docs/Standard\%20CDS\%20Examples.pdf}
   
   CDS Bing Bang \url{http://www.markit.com/assets/en/docs/markit-magazine/issue-4/60-cds-big-bang.pdf}
 }

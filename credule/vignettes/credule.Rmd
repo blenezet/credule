@@ -21,13 +21,13 @@ resetPar <- function() {
 }
 ```
 
-We will first explain how credit curves are constructed before showing how the credule package can be used to construct credit curves from the CDS quotes. We will look at 2 specific US Issuers as of 27 May 2014: Pfizer (Pfizer Inc - PFE)  and Radioshak (RadioShack Corp - RSH).
+We will first explain how credit curves are constructed (using a reduced-form model) before showing how the credule package can be used to build credit curves from the CDS quotes. We will look at 2 specific US Issuers as of 27 May 2014: Pfizer (Pfizer Inc - PFE) and Radioshak (RadioShack Corp - RSH).
 
 ## Credit Curve Bootstrapping Methodology
 
 ### Hazard rate and Survival Probability
 
-The reduced-form model that we use here is based on the work of Jarrow and Turnbull (1995), who characterize a credit event as the first event of a Poisson counting process which occurs at some time τ with a probability defined as
+The reduced-form model that we use here is based on the work of Jarrow and Turnbull (1995), who characterize a credit event as the first event of a Poisson counting process which occurs at some time $t$ with a probability defined as
 :
 
 $\text{Pr}\left[\tau<t+dt\,|\,\tau\geq t\right]=\lambda(t)dt$
@@ -74,19 +74,19 @@ where:
 
 ### Valuing the Default Leg
 
-The default leg (or protection leg) is the contingent payment of (100\% – R) on the face value of the protection made following the credit event. R is the expected recovery rate.
+The default leg (or protection leg) is the contingent payment of (100\% - R) on the face value of the protection made following the credit event. R is the expected recovery rate.
 In pricing the default leg, it is important to take into account the timing of the credit event because this can have a significant effect on the present value of the protection leg especially for longer maturity default swaps. Within the hazard rate approach we can solve this timing problem by conditioning on each small time interval $[s,s+ds]$ between time $t_V$ and time $t_N$ at which the credit event can occur. We calculate the expected present value of
 the recovery payment as:
 
 $\text{DL PV}(t_{V},t_{N})=(1-R)\int_{t_{V}}^{t_{N}}Z(t_{V},s)Q(t_{V},s)\lambda(s)ds$
  
-The integral, makes this expression tedious to evaluate. It is possible to show that we can, without any material loss of accuracy, simply assume that the credit event can only occur on a finite number M of discrete points per year. In this case, the default leg value can be expressed as:
+The integral makes this expression tedious to evaluate. It is possible to show that we can, without any material loss of accuracy, simply assume that the credit event can only occur on a finite number M of discrete points per year. In this case, the default leg value can be expressed as:
 
 $\text{DL PV}(t_{V},t_{N})=(1-R)\sum_{m=1}^{M\times t_{N}}Z(t_{V},t_{m})\left(Q(t_{V},t_{m-1})-Q(t_{V},t_{m})\right)$
 
 where:
 
-- M is the number of discrete points per year on which we assume a credit event can happen. $t_{N}$ is the maturity of the swap. $m=1,\ldots,M\times t_{N}$ is the index the discrete point on which a credit event can happen between the valuation date and the maturity of the swap. We choose $M=12$ (monthly discretization) to keep the computation lightweight. [TurnO'k03] compares the results of a daily discretization (M=365) and a monthly discretization (M=12) and shows that monthly intervals has an absolute error which is well inside the bid-offer spread; hence monthly discretization can be used to keep the model fast and simple.
+- M is the number of discrete points per year on which we assume a credit event can happen. $t_{N}$ is the maturity of the swap. $m=1,\ldots,M\times t_{N}$ is the index the discrete point on which a credit event can happen between the valuation date and the maturity of the swap. We choose $M=12$ (monthly discretization) to keep the computation lightweight. D. O\'kane and S. Turnbull (2003) compare the results of a daily discretization ($M=365$) and a monthly discretization ($M=12$) and shows that monthly intervals has an absolute error which is well inside the bid-offer spread; hence monthly discretization can be used to keep the model fast and simple.
 - $R$ is the recovery rate
 - $Q(t_{V},t_{m})$ is the arbitrage-free survival probability of the reference entity from valuation time $t_{V}$ to premium time $t_{m}$
 - $Z(t_{V},t_{m})$ is the risk-free discount factor from valuation date to the date m
@@ -99,7 +99,7 @@ Calibration of the model imply finding an hazard rate (non-cumulative hazard rat
 - Hazard rate is a piece-wise constant function of time (i.e. hazard rates are independent from interest rates)
 - Recovery rate is constant
 
-The construction of the hazard rate term structure is done by an iterative process called bootstrapping. Let's assume we have quotes for 1Y, 3Y, 5Y and 7Y for a given issuer. From the 1Y CDS spread $s_1Y$, we will find the hazard rate $\lambda_{0,1}$ which equates the present value of the premium leg and of the protection leg. From the 3Y spread $s_3Y$, we will find the hazard rate $\lambda_{1,3}$ which equates the present value of the premium leg to the present value of the protection leg. By iterating this process, we obtain the hazard rates: \lambda_{0,1},\lambda_{1,3},\lambda_{3,5},\lambda_{5,7}. We can also easily calculate the survival probabilities from this hazard rate term structure (as we have seen earlier).
+The construction of the hazard rate term structure is done by an iterative process called bootstrapping. Let's assume we have quotes for 1Y, 3Y, 5Y and 7Y for a given issuer. From the 1Y CDS spread $s_{1Y}$, we will find the hazard rate $\lambda_{0,1}$ which equates the present value of the premium leg and of the protection leg. From the 3Y spread $s_{3Y}$, we will find the hazard rate $\lambda_{1,3}$ which equates the present value of the premium leg to the present value of the protection leg. By iterating this process, we obtain the hazard rates: $\lambda_{0,1},\lambda_{1,3},\lambda_{3,5},\lambda_{5,7}$. We can also easily calculate the survival probabilities from this hazard rate term structure (as we have seen earlier).
 
 ## Market data
 
@@ -118,7 +118,7 @@ knitr::kable(yieldcurve,caption = "USD yield curve (%) as of 27 May 2014")
 
 ```{r, echo=TRUE}
 cdsTenor = c(1,2,3,4,5,7,10,15,20,30)
-cdsSpread_PFE = c(0.0003,0.0009,0.0015,0.0021,0.0028,0.0043,0.0061,0.0063,  0.0068,0.0066)
+cdsSpread_PFE = c(0.0003,0.0009,0.0015,0.0021,0.0028,0.0043,0.0061,0.0063, 0.0068,0.0066)
 ```
 
 ```{r, fig.show='hold',echo=FALSE}
@@ -201,14 +201,15 @@ mtext("Pfizer Inc on 27-May-2014", outer = TRUE, cex = 1.5)
 par = default.par
 ```
 
-### Conclusion
+## Conclusion
 
-It is interesting to compare the credit curve of these 2 issuers. A quick look at the 5Y spreads (market benchmark) shows that one issuer is much more risky than the other. Pfizer 5Y spread is at 28bp (i.e. 0.28\%), this is a pretty low CDS spreads (only 3bp more than the 5Y CDS on a sovereign like Finland, as of 3 August 2015). Radioshak 5Y spread is at 4894bp (i.e. 48.94\%) which is a very very high CDS spread. As a comparison, it is more than two times than the Greece 5Y CDS as of 3 August 2015 (2203.70bp). 
+It is interesting to compare the credit curve of these 2 issuers. A quick look at the 5Y spreads (market benchmark) shows that one issuer is much more risky than the other. Pfizer 5Y spread is at 28bp (i.e. 0.28\%), this is a pretty low CDS spreads (only 3bp more than the 5Y CDS on a sovereign like Finland, as of 3 August 2015). On the other hand, Radioshack 5Y spread is at 4894bp (i.e. 48.94\%) which is a very high CDS spread. As a comparison, it is more than two times than the Greece 5Y CDS as of 3 August 2015 (2203.70bp). 
 
-Futhermore, we can observe than the hazard rate does not have the same dynamic for both issuers. For Pfizer, the hazard rate curve is upward sloping (i.e hazard rate increase over time) whereas for Radioshack, the hazard rate curve is downward sloping. Downward sloping curve is commonly observed for stressed assets/speculative-grade firms (Radioshak rating is CCC as of 27 May 2014) and it translates the investors's expecation of a short term default. In other words, investors think that the issuer has room to improve with age (become less risky) or less potential to worsen considering that it is very risky today.
+Futhermore, we can observe than the hazard rate does not have the same dynamic for both issuers. For Pfizer, the hazard rate curve is upward sloping (i.e hazard rate increase over time) whereas for Radioshack, the hazard rate curve is downward sloping. Downward sloping curve is commonly observed for stressed assets/speculative-grade firms (Radioshack rating is CCC as of 27 May 2014) and it translates the investors's expecation of a short term default. In other words, investors think that the issuer has room to improve with age (become less risky) or less potential to worsen considering that it is very risky today.
 
 ## References
 
 - JP Morgan. Credit Derivatives: A Primer. JP Morgan Credit Derivatives and Quantitative Research (January 2005)
 - D. O\'kane and S. Turnbull. Valuation of Credit Default Swaps. Lehman Brothers Quantitative Credit Research (Apr. 2003)
 - Standard CDS Examples. Supporting document for the Implementation of the ISDA CDS Standard Model (Oct. 2012)
+
