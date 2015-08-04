@@ -10,15 +10,12 @@ vignette: >
 ---
 
 ```{r, echo=FALSE}
-library(scales)
 library(credule)
 
-resetPar <- function() {
-    dev.new()
-    op <- par(no.readonly = TRUE)
-    dev.off()
-    op
+percent <- function(x, digits = 2, format = "f", ...) {
+  paste0(formatC(100 * x, format = format, digits = digits, ...), "%")
 }
+
 ```
 
 We will first explain how credit curves are constructed (using a reduced-form model) before showing how the credule package can be used to build credit curves from the CDS quotes. We will look at 2 specific US Issuers as of 27 May 2014: Pfizer (Pfizer Inc - PFE) and Radioshak (RadioShack Corp - RSH).
@@ -192,7 +189,7 @@ knitr::kable(creditcurve_PFE_disp, digits=4,caption = "Pfizer Inc Credit Curve",
 ```
 
 
-```{r, echo=FALSE, fig.height=3.5, fig.width=6, fig.cap = "Your figure caption."}
+```{r, echo=FALSE, fig.height=3.5, fig.width=6}
 default.par = par()
 par(mfrow=c(1,2),oma = c(0, 0, 2, 0))
 barplot(creditcurve_PFE$hazrate, names.arg = creditcurve_PFE$tenor, xlab="Time", ylab = "Non-Cummulative Hazard rate", main ="Hazard Rate (Non-Cum)")
